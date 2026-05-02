@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Reckoning Room — A Film Journal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#f5f0e8;--dark:#1a1510;--gold:#b8973a;--gold-light:#d4b86a;--gold-pale:#f0e8cc;
+      --ink:#2c2416;--muted:#7a6e5e;--border:#c8b87a;--card:#faf6ee;
+    }
+    body{font-family:'EB Garamond',serif;background:var(--cream);color:var(--ink);min-height:100vh}
+    .wrap{max-width:680px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .masthead{text-align:center;border-bottom:1px solid var(--border);padding-bottom:1.5rem;margin-bottom:2rem}
+    .masthead-ornament{font-size:12px;color:var(--gold);letter-spacing:.2em;margin:4px 0}
+    h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:2.6rem;letter-spacing:.05em;color:var(--ink);font-style:italic}
+    .sub{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+    .form-card{background:var(--card);border:1px solid var(--border);padding:1.75rem 2rem;margin-bottom:2rem}
+    .form-row{margin-bottom:1.25rem}
+    label{display:block;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+    input[type=text],textarea{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);padding:6px 2px;font-family:'EB Garamond',serif;font-size:1rem;color:var(--ink);outline:none;transition:border-color .2s}
+    input[type=text]:focus,textarea:focus{border-bottom-color:var(--gold)}
+    textarea{resize:vertical;min-height:70px;line-height:1.6}
+    .stars-row{display:flex;gap:6px;margin-top:4px}
+    .star{font-size:1.6rem;cursor:pointer;color:#ccc;transition:color .15s;line-height:1;user-select:none}
+    .star.lit{color:var(--gold)}
+    .rating-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;color:var(--muted);margin-left:8px;line-height:1.8}
+    .btn{display:block;width:100%;padding:.7rem;background:var(--dark);color:var(--gold-light);font-family:'Cormorant Garamond',serif;font-size:1.05rem;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--dark);cursor:pointer;transition:all .2s;margin-top:.5rem}
+    .btn:hover{background:var(--gold);color:var(--dark);border-color:var(--gold)}
+    .section-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;color:var(--ink);letter-spacing:.06em;border-bottom:1px solid var(--border);padding-bottom:.5rem;margin-bottom:1.2rem;display:flex;justify-content:space-between;align-items:baseline}
+    .count{font-size:.75rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+    .sort-row{display:flex;gap:.6rem;margin-bottom:1rem;align-items:center}
+    .sort-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .sort-btn{background:none;border:1px solid var(--border);padding:3px 10px;font-family:'EB Garamond',serif;font-size:.82rem;color:var(--muted);cursor:pointer;letter-spacing:.06em}
+    .sort-btn.active{background:var(--dark);color:var(--gold-light);border-color:var(--dark)}
+    .review-card{background:var(--card);border:1px solid var(--border);padding:1.25rem 1.5rem;margin-bottom:.9rem;position:relative}
+    .review-card:last-child{margin-bottom:0}
+    .rc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
+    .rc-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;color:var(--ink)}
+    .rc-stars{color:var(--gold);font-size:1rem;letter-spacing:1px}
+    .rc-comment{font-size:.95rem;color:var(--ink);line-height:1.6;margin:.4rem 0}
+    .rc-rater{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:right}
+    .rc-delete{position:absolute;top:.8rem;right:1rem;background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;letter-spacing:.08em;font-family:'EB Garamond',serif;opacity:.5;transition:opacity .2s}
+    .rc-delete:hover{opacity:1;color:#8b2020}
+    .empty{text-align:center;padding:2rem;color:var(--muted);font-style:italic;font-size:1rem;border:1px dashed var(--border)}
+    .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--dark);color:var(--gold-light);padding:.5rem 1.5rem;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;opacity:0;transition:opacity .4s;pointer-events:none;z-index:999}
+    .toast.show{opacity:1}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="masthead">
+      <div class="masthead-ornament">est. mid-century, circa now</div>
+      <h1>The Reckoning Room</h1>
+      <div class="sub">A film journal for those of a certain age</div>
+      <div class="masthead-ornament">— ✦ —</div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-row">
+        <label>Film Title</label>
+        <input type="text" id="film" placeholder="What did you waste two hours on?">
+      </div>
+      <div class="form-row">
+        <label>Your Verdict</label>
+        <div style="display:flex;align-items:center">
+          <div class="stars-row" id="stars">
+            <span class="star" data-v="1">★</span>
+            <span class="star" data-v="2">★</span>
+            <span class="star" data-v="3">★</span>
+            <span class="star" data-v="4">★</span>
+            <span class="star" data-v="5">★</span>
+          </div>
+          <span class="rating-label" id="rLabel">tap to rate</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Commentary</label>
+        <textarea id="comment" placeholder="Compose your thoughts..."></textarea>
+      </div>
+      <div class="form-row">
+        <label>Critic's Name</label>
+        <input type="text" id="rater" placeholder="Who shall history remember?">
+      </div>
+      <button class="btn" id="submitBtn">Submit Review</button>
+    </div>
+
+    <div class="section-title">
+      <span>The Archive</span>
+      <span class="count" id="countLabel">0 reviews</span>
+    </div>
+    <div class="sort-row">
+      <span class="sort-label">Sort</span>
+      <button class="sort-btn active" id="sNewest">Newest</button>
+      <button class="sort-btn" id="sTop">Top Rated</button>
+    </div>
+    <div id="reviewList"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'reckoning_room_reviews';
+    let reviews = [];
+    let currentRating = 0;
+    let sortMode = 'newest';
+    const rateLabels = ['', 'Dreadful', 'Mediocre', 'Passable', 'Quite Fine', 'Magnificent'];
+
+    function load() {
+      try { const d = localStorage.getItem(STORAGE_KEY); if (d) reviews = JSON.parse(d); } catch(e) { reviews = []; }
+    }
+    function save() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews)); } catch(e) {}
+    }
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2400);
+    }
+    function setStars(v) {
+      currentRating = v;
+      document.querySelectorAll('.star').forEach(s => {
+        s.classList.toggle('lit', parseInt(s.dataset.v) <= v);
+      });
+      document.getElementById('rLabel').textContent = v ? rateLabels[v] : 'tap to rate';
+    }
+    document.getElementById('stars').addEventListener('click', e => {
+      if (e.target.classList.contains('star')) setStars(parseInt(e.target.dataset.v));
+    });
+    document.getElementById('stars').addEventListener('mouseover', e => {
+      if (e.target.classList.contains('star')) {
+        const v = parseInt(e.target.dataset.v);
+        document.querySelectorAll('.star').forEach(s => s.classList.toggle('lit', parseInt(s.dataset.v) <= v));
+        document.getElementById('rLabel').textContent = rateLabels[v];
+      }
+    });
+    document.getElementById('stars').addEventListener('mouseout', () => setStars(currentRating));
+
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      const film = document.getElementById('film').value.trim();
+      const comment = document.getElementById('comment').value.trim();
+      const rater = document.getElementById('rater').value.trim();
+      if (!film) { showToast('A film must have a name, darling.'); return; }
+      if (!currentRating) { showToast('Do assign it some stars, however few.'); return; }
+      if (!rater) { showToast('History requires a name.'); return; }
+      reviews.unshift({
+        id: Date.now(), film, rating: currentRating, comment, rater,
+        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+      });
+      save(); renderList();
+      document.getElementById('film').value = '';
+      document.getElementById('comment').value = '';
+      document.getElementById('rater').value = '';
+      setStars(0);
+      showToast('Recorded for posterity.');
+    });
+
+    function deleteReview(id) {
+      reviews = reviews.filter(r => r.id !== id); save(); renderList();
+      showToast('Expunged from the record.');
+    }
+
+    function escHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function renderList() {
+      const list = document.getElementById('reviewList');
+      document.getElementById('countLabel').textContent = reviews.length + ' review' + (reviews.length !== 1 ? 's' : '');
+      let sorted = [...reviews];
+      if (sortMode === 'top') sorted.sort((a, b) => b.rating - a.rating || b.id - a.id);
+      if (!sorted.length) {
+        list.innerHTML = '<div class="empty">The archive awaits its first entry.</div>'; return;
+      }
+      list.innerHTML = sorted.map(r => `
+        <div class="review-card">
+          <button class="rc-delete" onclick="deleteReview(${r.id})">remove</button>
+          <div class="rc-top">
+            <div class="rc-title">${escHtml(r.film)}</div>
+            <div class="rc-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+          </div>
+          ${r.comment ? `<div class="rc-comment">${escHtml(r.comment)}</div>` : ''}
+          <div class="rc-rater">— ${escHtml(r.rater)} · ${r.date}</div>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('sNewest').addEventListener('click', () => {
+      sortMode = 'newest';
+      document.getElementById('sNewest').classList.add('active');
+      document.getElementById('sTop').classList.remove('active');
+      renderList();
+    });
+    document.getElementById('sTop').addEventListener('click', () => {
+      sortMode = 'top';
+      document.getElementById('sTop').classList.add('active');
+      document.getElementById('sNewest').classList.remove('active');
+      renderList();
+    });
+
+    load();
+    renderList();
+  </script>
+</body>
+</html>
